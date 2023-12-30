@@ -8,7 +8,47 @@ This repository contains code for our [paper](http://arxiv.org/abs/2306.12601).
 
 ### Obtaining the datasets
 
-Coming soon.
+Run the following commands to download and process the datasets into the required format:
+```bash
+cd dataset_generation
+bash run.sh
+```
+
+### Using the datasets
+
+The commands above will download the three datasets with the following directory structure:
+```
+dataset_generation
+├── Amazon-Google
+├── concurrentqa
+└── Walmart-Amazon
+    ├── Walmart_corpus.json
+    ├── Amazon_corpus.json
+    ├── train_Walmart.json
+    ├── train_Amazon.json
+    ├── val.json
+    └── test.json
+```
+
+The `xyz_corpus.json` contains the corpus of documents from which retrieval is performed. The corpus files have the following format:
+```json
+{"id": "unique_passage_id", "title": "passage_title", "text": "passage_body"}
+```
+
+The `train_xyz.json` file contains the training data from the known distribution (say Walmart products) and is used to train the retrieval encoders. Each training example has the following relevant fields:
+```json
+{
+ "_id": "unique_query_id",
+ "question": "query",
+ "pos_paras": [{"title": "passage_title", "text": "passage_body"}],
+ "neg_paras": []
+}
+```
+Note that negative paragraphs are not provided in the dataset. During training, a negative paragraphs is sampled for each example.
+
+The `val.json` and `test.json` files have a similar format with the difference that the queries here require two passages to be retrieved -- one from each of the two distributions. So the `pos_paras` field would now have two passages. For example, the query could be some product like 'Acer Iconia Tablet Bluetooth Keyboard' and the two passages would be the product listing from Walmart and Amazon.
+
+The task is to train the retriever on one of the distributions (i.e. one `train_xyz.json`) and devise mechanisms to correctly retrieve both passages for the test queries (`test.json`). In the Walmart-Amazon case, this would mean that we train on Walmart queries in `train_Walmart.json` (the known distribution) and evaluate on queries in `test.json` that require retrieval from both Walmart (known) and Amazon (unknown) corpora.
 
 ### Running the experiments
 
