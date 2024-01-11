@@ -1,0 +1,9 @@
+mdr.egg*/
+apex/
+logs/
+.DS_Store
+*.pyc
+*.swp
+tflogs/
+__pycache__/
+_eval_mdr.ipynb
