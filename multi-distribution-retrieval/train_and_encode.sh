@@ -10,7 +10,7 @@ MODEL_NAME=roberta-base
 
 # Train encoders
 
-for domain in ${domain2} ${domain1}; do
+for domain in ${domain1} ${domain2}; do
     CUDA_VISIBLE_DEVICES=0,1,2,3 python mdr/retrieval/train_single.py \
         --do_train \
         --prefix ${domain}_single \

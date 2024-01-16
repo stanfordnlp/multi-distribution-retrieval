@@ -52,12 +52,25 @@ The task is to train the retriever on one of the distributions (i.e. one `train_
 
 ### Running the experiments
 
-Coming soon.
+1. Requirements are provided in `multi-distribution-retrieval/requirements.txt` and a setup script is given at `multi-distribution-retrieval/setup.sh`.
+2. Download the datasets using the instructions provided above
+3. The next step is to train the encoders on the known domain. Once this is done, we encode the known and unknown corpora using this trained encoder to speed up inference by not having to encode the entire corpus for each query. The following commands are used for this:
+    ```bash
+    cd multi-distribution-retrieval
+    bash train_and_encode.sh
+    ```
+    This trains two encoders on the Walmart Amazon dataset. The first is with Walmart as the known domain and the second with Amazon as the known domain. Next, the two corpora are encoded using these two encoders leading to four sets of corpus encodings.
+4. With the encoders trained and corpora encoded, we can now run the evaluation. This is done using `eval_mdr.py` script in the `multi-distribution-retrieval` directory. It prints out the recall@k and average precision numbers for the various allocation strategies i.e. naive merging, various per-task allocation and per-query allocation.
+    
+    Run this as:
+    ```bash
+    python eval_mdr.py --dataset Walmart-Amazon --known_domain Walmart --model_name roberta-base --topk 10 --batch_size 32
+    ```
 
 ### Citations
 
 If you use this codebase, or otherwise found our work valuable, please cite:
-```
+```bibtex
 @article{chatterjee2023retrieval,
   title={Resources and Evaluations for Multi-Distribution Dense Information Retrieval},
   author={Chatterjee, Soumya and Khattab, Omar and Arora, Simran},
@@ -69,7 +82,7 @@ If you use this codebase, or otherwise found our work valuable, please cite:
 As well as the original creators of the datasets you use:
 
 ***ConcurrentQA***
-```
+```bibtex
 @article{arora2023reasoning,
     title={Reasoning over Public and Private Data in Retrieval-Based Systems}, 
     author={Simran Arora and Patrick Lewis and Angela Fan and Jacob Kahn and Christopher Ré},
@@ -79,7 +92,7 @@ As well as the original creators of the datasets you use:
 ```
 
 ***Walmart-Amazon***
-```
+```bibtex
 @misc{magellandata,
     title={The Magellan Data Repository},
     howpublished={\url{https://sites.google.com/site/anhaidgroup/projects/data}},
@@ -90,7 +103,7 @@ As well as the original creators of the datasets you use:
 ```
 
 ***Amazon-Google***
-```
+```bibtex
 @article{kopcke2010evaluation,
   title={Evaluation of entity resolution approaches on real-world match problems},
   author={K{\"o}pcke, Hanna and Thor, Andreas and Rahm, Erhard},
@@ -100,5 +113,16 @@ As well as the original creators of the datasets you use:
   pages={484--493},
   year={2010},
   publisher={VLDB Endowment}
+}
+```
+
+The code is based on those of [ConcurrentQA](https://github.com/facebookresearch/concurrentqa) and [Multi-Hop Dense Text Retrieval](https://github.com/facebookresearch/multihop_dense_retrieval). If you use our code, please also cite them:
+
+```bibtex
+@article{xiong2020answering,
+  title={Answering Complex Open-Domain Questions with Multi-Hop Dense Retrieval},
+  author={Xiong, Wenhan and Li, Xiang Lorraine and Iyer, Srinivasan and Du, Jingfei and Lewis, Patrick and Wang, William Yang and Mehdad, Yashar and Yih, Wen-tau and Riedel, Sebastian and Kiela, Douwe and O{\u{g}}uz, Barlas},
+  journal={International Conference on Learning Representations},
+  year={2021}
 }
 ```
